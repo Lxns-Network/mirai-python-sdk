@@ -37,4 +37,7 @@ async def _(app: Mirai, group: Group, member: Member, message: MessageChain, sou
 async def _(app: Mirai, event: BotInvitedJoinGroupRequestEvent):
     await app.respondRequest(event, 1) # 自动同意入群邀请
     return True
+
+if __name__ == "__main__":
+    app.run()
 ```
