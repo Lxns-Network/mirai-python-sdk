@@ -28,7 +28,8 @@ class MessageChain(BaseModel):
             if not isinstance(i, dict):
                 raise TypeError("invaild value")
             try:
-                result.append(MessageComponents[i['type']].parse_obj(i))
+                if i['type'] != "Xml":
+                    result.append(MessageComponents[i['type']].parse_obj(i))
             except:
                 Protocol.error(f"error throwed by message serialization: {i['type']}, it's {i}")
                 raise
