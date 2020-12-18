@@ -1,3 +1,8 @@
+import uuid
+import shutil
+import datetime
+import tempfile
+import subprocess
 import typing as T
 from mirai.event.message.base import BaseMessageComponent, MessageComponentTypes
 from pydantic import Field, validator, HttpUrl
@@ -11,7 +16,7 @@ from mirai.image import (
 from mirai.voice import LocalVoice
 from mirai.logger import Protocol as ProtocolLogger
 from aiohttp import ClientSession
-import datetime, ffmpeg, tempfile, uuid
+
 
 __all__ = [
     "Plain",
@@ -276,13 +281,18 @@ class Voice(BaseMessageComponent):
 
     @staticmethod
     def fromFileSystem(path: T.Union[Path, str]) -> LocalVoice:
-        temp_voiceId = uuid.uuid4()
-        stream = ffmpeg.input(path)
-        stream = ffmpeg.output(stream, r"%s\%s.amr" % (tempfile.gettempdir(), temp_voiceId), **{
-            'ar': 8000, 'ac': "1", 'ab': "12.2k"
-        })
-        ffmpeg.run(stream)
-        return LocalVoice(r"%s\%s.amr" % (tempfile.gettempdir(), temp_voiceId))
+        if not path.endswith("amr"):
+            if not shutil.which("ffmpeg"):
+                raise FileNotFoundError("ffmpeg is not exists")
+            temp_voiceId = uuid.uuid4()
+            pc = subprocess.Popen(["ffmpeg", "-i", path,
+                                   '-ar', '8000', '-ac', "1", '-ab', "12.2k",
+                                   f"{tempfile.gettempdir()}/{temp_voiceId}.amr"])
+            if pc.wait() != 0:
+                raise ProcessLookupError(pc.returncode)
+            return LocalVoice(f"{tempfile.gettempdir()}/{temp_voiceId}.amr")
+        else:
+            return LocalVoice(path)
 
 MessageComponents = {
     "At": At,
