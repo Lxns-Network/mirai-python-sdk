@@ -5,8 +5,7 @@
 - mirai-api-http *v1.8.0*：https://github.com/project-mirai/mirai-api-http
 ### 语音组件
 #### 第三方依赖
-- ffmpeg 环境：https://ffmpeg.org/
-- `pip install ffmpeg-python`：https://github.com/kkroening/ffmpeg-python
+ffmpeg 环境：https://ffmpeg.org/
 #### 使用方法
 MessageChain：`Voice.fromFileSystem(Path)`
 ### 示例
