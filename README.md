@@ -2,7 +2,7 @@
 基于 kuriyama（Python SDK v3）的修改版本
 
 ### 这是什么?
-以 OICQ(QQ) 协议驱动的高性能机器人开发框架 [Mirai](https://github.com/mamoe/mirai) 的 Python 接口, 通过其提供的 `HTTP API` 与无头客户端(`Mirai`)交互.
+以 OICQ(QQ) 协议驱动的高性能机器人开发框架 [Mirai](https://github.com/mamoe/mirai) 的 Python 接口, 通过其提供的 `HTTP API` 与无头客户端 `Mirai` 交互.
 
 ### 开始使用
 #### 从 Pypi 安装
