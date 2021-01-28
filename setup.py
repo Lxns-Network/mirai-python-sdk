@@ -1,15 +1,8 @@
 from setuptools import setup, find_packages
 import requests
 import os
-#os.chdir(r"F:\")
-
 
 def md_to_rst(from_file, to_file):
-    """
-    将markdown格式转换为rst格式
-    @param from_file: {str} markdown文件的路径
-    @param to_file: {str} rst文件的路径
-    """
     response = requests.post(
         url='http://c.docverter.com/convert',
         data={'to': 'rst', 'from': 'markdown'},
@@ -20,19 +13,14 @@ def md_to_rst(from_file, to_file):
         with open(to_file, "wb") as f:
             f.write(response.content)
  
-
-if __name__ == '__main__':
-    # md_to_rst("README.md", "README.rst")
-    pass
-
+md_to_rst("README.md", "README.rst")
 
 with open("README.rst", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
-
 setup(
     name="kuriyama-lxnet",
-    version='1.1',
+    version='1.2',
     description='A framework for OICQ(QQ, made by Tencent) headless client "Mirai".',
     author='lxnet',
     author_email="personnpc@gmail.com",
