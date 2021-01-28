@@ -132,7 +132,7 @@ class Image(BaseMessageComponent):
         return f"[Image::{self.imageId}]"
 
     def asGroupImage(self) -> str:
-        return f"{{{self.imageId.upper()}}}.mirai"
+        return self.imageId.upper()
 
     def asFriendImage(self) -> str:
         return self.imageId.upper()
