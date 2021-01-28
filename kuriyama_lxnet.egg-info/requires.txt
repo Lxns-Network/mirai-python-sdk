@@ -1,4 +1,0 @@
-aiohttp
-pydantic
-Logbook
-async_lru
