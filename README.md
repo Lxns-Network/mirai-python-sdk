@@ -53,6 +53,10 @@ async def _(app: Mirai, event: BotInvitedJoinGroupRequestEvent):
     await app.respondRequest(event, 1) # 自动同意入群邀请
     return True
 
+@app.receiver("AppInitEvent")
+async def _(app: Mirai):
+    print("应用初始化完成，您可以在此直接获取到 app")
+
 if __name__ == "__main__":
     app.run()
 ```
