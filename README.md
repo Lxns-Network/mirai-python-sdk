@@ -23,7 +23,7 @@ pip install kuriyama-lxnet
 #### 第三方依赖
 ffmpeg 环境：https://ffmpeg.org/
 #### 使用方法
-MessageChain：`Voice.fromFileSystem(Path)`
+MessageChain：`Voice.fromFileSystem(Path, convert_type="silk")`
 ### 示例
 ```python
 from mirai import Mirai, Plain, MessageChain, Friend, Group, Member, Source, BotInvitedJoinGroupRequestEvent
