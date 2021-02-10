@@ -668,6 +668,10 @@ class Mirai(MiraiProtocol):
                     loop.run_until_complete(self.setConfig(enableWebsocket=False))
                     loop.create_task(self.message_polling())
             loop.create_task(self.event_runner())
+            loop.run_until_complete(self.queue.put(InternalEvent(
+                name=self.getEventCurrentName("AppInitEvent"),
+                body={}
+            )))
 
         if not no_forever:
             for i in self.subroutines:

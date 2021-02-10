@@ -3,6 +3,8 @@ from ..builtins import UnexpectedException
 from enum import Enum
 
 class ExternalEvents(Enum):
+    AppInitEvent = AppInitEvent
+
     BotOnlineEvent = BotOnlineEvent
     BotOfflineEventActive = BotOfflineEventActive
     BotOfflineEventForce = BotOfflineEventForce

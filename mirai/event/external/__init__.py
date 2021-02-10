@@ -6,6 +6,9 @@ from mirai.entities.friend import Friend
 import typing as T
 from datetime import datetime
 
+class AppInitEvent(ExternalEvent):
+    type: EventType = EventType.AppInitEvent
+
 class BotOnlineEvent(ExternalEvent):
     type: EventType = EventType.BotOnlineEvent
     qq: int

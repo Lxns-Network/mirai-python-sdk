@@ -280,17 +280,30 @@ class Voice(BaseMessageComponent):
         return self.voiceId
 
     @staticmethod
-    def fromFileSystem(path: T.Union[Path, str]) -> LocalVoice:
-        if not path.endswith("amr"):
+    def fromFileSystem(path: T.Union[Path, str], convert_type="silk") -> LocalVoice:
+        if not (path.endswith("amr") and path.endswith("silk")):
             if not shutil.which("ffmpeg"):
                 raise FileNotFoundError("ffmpeg is not exists")
             temp_voiceId = uuid.uuid4()
-            pc = subprocess.Popen(["ffmpeg", "-i", path,
-                                   '-ar', '8000', '-ac', "1", '-ab', "12.2k",
-                                   f"{tempfile.gettempdir()}/{temp_voiceId}.amr"])
-            if pc.wait() != 0:
-                raise ProcessLookupError(pc.returncode)
-            return LocalVoice(f"{tempfile.gettempdir()}/{temp_voiceId}.amr")
+            if convert_type == "amr":
+                pc = subprocess.Popen(["ffmpeg", "-i", path,
+                                    '-ar', '8000', '-ac', "1", '-ab', "12.2k",
+                                    f"{tempfile.gettempdir()}/{temp_voiceId}.amr"])
+                if pc.wait() != 0:
+                    raise ProcessLookupError(pc.returncode)
+                return LocalVoice(f"{tempfile.gettempdir()}/{temp_voiceId}.amr")
+            elif convert_type == "silk":
+                if not shutil.which("silk_v3_encoder"):
+                    raise FileNotFoundError("silk_v3_encoder is not exists")
+                pc = subprocess.Popen(["ffmpeg", "-i", path, "-f", "s16le", "-ar", "24000", "-ac", "1", 
+                                    f"{tempfile.gettempdir()}/{temp_voiceId}.pcm"])
+                if pc.wait() != 0:
+                    raise ProcessLookupError(pc.returncode)
+                pc = subprocess.Popen(["silk_v3_encoder", f"{tempfile.gettempdir()}/{temp_voiceId}.pcm",
+                                    f"{tempfile.gettempdir()}/{temp_voiceId}.silk", "-rate", "24000", "-quiet", "-tencent"])
+                if pc.wait() != 0:
+                    raise ProcessLookupError(pc.returncode)
+                return LocalVoice(f"{tempfile.gettempdir()}/{temp_voiceId}.silk")
         else:
             return LocalVoice(path)
 

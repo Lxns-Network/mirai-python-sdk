@@ -1,6 +1,8 @@
 from enum import Enum
 
 class ExternalEventTypes(Enum):
+    AppInitEvent = "AppInitEvent"
+
     BotOnlineEvent = "BotOnlineEvent"
     BotOfflineEventActive = "BotOfflineEventActive"
     BotOfflineEventForce = "BotOfflineEventForce"

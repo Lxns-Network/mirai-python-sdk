@@ -36,6 +36,8 @@ from mirai.event import (
 )
 
 from mirai.event.external import (
+    AppInitEvent,
+    
     BotOnlineEvent,
     BotOfflineEventActive,
     BotOfflineEventForce,
