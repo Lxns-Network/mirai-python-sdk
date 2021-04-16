@@ -23,7 +23,7 @@ pip install kuriyama-lxnet
 #### 第三方依赖
 ffmpeg 环境：https://ffmpeg.org/
 #### 使用方法
-MessageChain：`Voice.fromFileSystem(Path)`
+MessageChain：`Voice.fromFileSystem(Path, convert_type="silk")`
 ### 示例
 ```python
 from mirai import Mirai, Plain, MessageChain, Friend, Group, Member, Source, BotInvitedJoinGroupRequestEvent
@@ -52,6 +52,10 @@ async def _(app: Mirai, group: Group, member: Member, message: MessageChain, sou
 async def _(app: Mirai, event: BotInvitedJoinGroupRequestEvent):
     await app.respondRequest(event, 1) # 自动同意入群邀请
     return True
+
+@app.receiver("AppInitEvent")
+async def _(app: Mirai):
+    print("应用初始化完成，您可以在此直接获取到 app")
 
 if __name__ == "__main__":
     app.run()
