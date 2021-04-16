@@ -6,7 +6,7 @@ from datetime import timedelta
 import pydantic
 from mirai.entities.friend import Friend
 from mirai.entities.group import (Group, GroupSetting, Member,
-                                  MemberChangeableSetting)
+                                  MemberChangeableSetting, GroupFile, GroupFileShort)
 from mirai.event import ExternalEvent
 from mirai.event import external as eem
 from mirai.event.enums import (
@@ -20,14 +20,15 @@ from mirai.event.message.chain import MessageChain
 from mirai.event.message.models import (BotMessage, FriendMessage,
                                         GroupMessage, MessageTypes)
 from mirai.image import InternalImage
+from mirai.voice import InternalVoice
+from mirai.file import InternalFile
 from mirai.logger import Protocol as ProtocolLogger
-from mirai.misc import (ImageType, VoiceType, assertOperatorSuccess,
+from mirai.misc import (ImageType, VoiceType, FileType, NudgeType, assertOperatorSuccess,
                         edge_case_handler, protocol_log, raiser, throw_error_if_not_enable)
 from mirai.network import fetch
 
 # 与 mirai 的 Command 部分将由 mirai.command 模块进行魔法支持,
 # 并尽量的兼容 mirai-console 的内部机制.
-from mirai.voice import InternalVoice
 
 
 class MiraiProtocol:
@@ -231,6 +232,93 @@ class MiraiProtocol:
             "type": type if isinstance(type, str) else type.value
         }))
         return components.Voice(**post_result)
+
+    @throw_error_if_not_enable
+    @protocol_log
+    @edge_case_handler
+    async def uploadFile(self, type: T.Union[str, FileType], file: InternalFile, target: int, path: str):
+        type = type if isinstance(type, str) else type.value
+        post_result = json.loads(await fetch.upload_file(f"{self.baseurl}/uploadFileAndSend", file.render(), {
+            "sessionKey": self.session_key,
+            "type": '{}{}'.format(type[0].upper(), type[1:]),  # 不知道为什么现在需要首字母大写
+            "target": target,
+            "path": path
+        }))
+
+        return components.File(**post_result)
+
+    @throw_error_if_not_enable
+    @protocol_log
+    @edge_case_handler
+    async def groupFileList(self, target: int, dir: str = ""):
+        return [GroupFileShort.parse_obj(file_info) \
+                    for file_info in await fetch.http_get(f"{self.baseurl}/groupFileList", {
+                        "sessionKey": self.session_key,
+                        "target": target,
+                        "dir": dir
+                    }
+                                  )]
+
+    @throw_error_if_not_enable
+    @protocol_log
+    @edge_case_handler
+    async def groupFileInfo(self, target: int, id: str):
+        return GroupFile.parse_obj(await fetch.http_get(f"{self.baseurl}/groupFileInfo", {
+                "sessionKey": self.session_key,
+                "target": target,
+                "id": id
+            }
+                                  ))
+
+    @throw_error_if_not_enable
+    @protocol_log
+    @edge_case_handler
+    async def groupRenameFile(self, target: int, id: str, name: str):
+        return assertOperatorSuccess(
+            await fetch.http_post(f"{self.baseurl}/groupFileRename", {
+                "sessionKey": self.session_key,
+                "target": target,
+                "id": id,
+                "rename": name
+            }
+                                  ), raise_exception=True)
+
+    @throw_error_if_not_enable
+    @protocol_log
+    @edge_case_handler
+    async def groupMkdir(self, target: int, dir_name: str):
+        return assertOperatorSuccess(
+            await fetch.http_post(f"{self.baseurl}/groupMkdir", {
+                "sessionKey": self.session_key,
+                "target": target,
+                "dir": dir_name
+            }
+                                  ), raise_exception=True)
+
+    @throw_error_if_not_enable
+    @protocol_log
+    @edge_case_handler
+    async def groupMoveFile(self, target: int, id: str, path: str):
+        return assertOperatorSuccess(
+            await fetch.http_post(f"{self.baseurl}/groupFileMove", {
+                "sessionKey": self.session_key,
+                "target": target,
+                "id": id,
+                "movePath": path
+            }
+                                  ), raise_exception=True)
+
+    @throw_error_if_not_enable
+    @protocol_log
+    @edge_case_handler
+    async def groupDeleteFile(self, target: int, id: str):
+        return assertOperatorSuccess(
+            await fetch.http_post(f"{self.baseurl}/groupFileDelete", {
+                "sessionKey": self.session_key,
+                "target": target,
+                "id": id
+            }
+                                  ), raise_exception=True)
 
     @protocol_log
     @edge_case_handler
@@ -442,7 +530,7 @@ class MiraiProtocol:
     @throw_error_if_not_enable
     @protocol_log
     @edge_case_handler
-    async def quit(self,  # 新增
+    async def quit(self,
                    group: T.Union[Group, int]
                    ):
         return assertOperatorSuccess(
@@ -455,9 +543,33 @@ class MiraiProtocol:
     @throw_error_if_not_enable
     @protocol_log
     @edge_case_handler
+    async def nudge(self, type: T.Union[str, NudgeType], subject: int, target: int):
+        type = type if isinstance(type, str) else type.value
+        return assertOperatorSuccess(await fetch.http_post(f"{self.baseurl}/sendNudge", {
+            "sessionKey": self.session_key,
+            "target": target,
+            "subject": subject,
+            "kind": '{}{}'.format(type[0].upper(), type[1:])  # 不知道为什么现在需要首字母大写
+        }), raise_exception=True)
+
+    @throw_error_if_not_enable
+    @protocol_log
+    @edge_case_handler
+    async def setEssence(self, source: T.Union[components.Source, BotMessage, int]):
+        return assertOperatorSuccess(await fetch.http_post(f"{self.baseurl}/setEssence", {
+            "sessionKey": self.session_key,
+            "target": source if isinstance(source, int) else source.id \
+                if isinstance(source, components.Source) else source.messageId \
+                if isinstance(source, BotMessage) else \
+                raiser(TypeError("invaild message source"))
+        }), raise_exception=True)
+
+    @throw_error_if_not_enable
+    @protocol_log
+    @edge_case_handler
     async def respondRequest(self,
                              request: T.Union[
-                                 eem.BotInvitedJoinGroupRequestEvent,  # 新增
+                                 eem.BotInvitedJoinGroupRequestEvent,
                                  eem.NewFriendRequestEvent,
                                  eem.MemberJoinRequestEvent
                              ],
@@ -644,3 +756,9 @@ class MiraiProtocol:
 
     async def handleInternalVoiceForGroup(self, voice: InternalVoice):
         return await self.uploadVoice("group", voice)
+
+    async def handleInternalVoiceForGroup(self, file: InternalFile):
+        return await self.uploadFile("group", file)
+
+    async def handleInternalVoiceForFriend(self, file: InternalFile):
+        return await self.uploadFile("friend", file)

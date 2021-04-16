@@ -42,6 +42,7 @@ class TempMessage(BaseModel):
 class BotMessage(BaseModel):
     type: MessageItemType = 'BotMessage'
     messageId: int
+    
 
 MessageTypes = {
     "GroupMessage": GroupMessage,

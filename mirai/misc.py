@@ -62,8 +62,14 @@ class ImageType(Enum):
     Friend = "friend"
     Group = "group"
 
-
 class VoiceType(Enum):
+    Group = "group"
+
+class FileType(Enum):
+    Group = "group"
+
+class NudgeType(Enum):
+    Friend = "friend"
     Group = "group"
 
 

@@ -58,3 +58,16 @@ class fetch:
                 response.raise_for_status()
                 Network.debug(f"requested url={url}, and status={response.status}, addon_dict={addon_dict}")
                 return await response.text("utf-8")
+
+    @staticmethod
+    async def upload_file(url, filedata: bytes, addon_dict: dict):
+        upload_data = aiohttp.FormData()
+        upload_data.add_field("file", filedata)
+        for item in addon_dict.items():
+            upload_data.add_fields(item)
+
+        async with aiohttp.ClientSession() as session:
+            async with session.post(url, data=upload_data) as response:
+                response.raise_for_status()
+                Network.debug(f"requested url={url}, and status={response.status}, addon_dict={addon_dict}")
+                return await response.text("utf-8")

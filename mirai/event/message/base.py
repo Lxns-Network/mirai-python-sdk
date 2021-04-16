@@ -21,6 +21,8 @@ class MessageComponentTypes(Enum):
     FlashImage = "FlashImage"
     Unknown = "Unknown"
     Voice = "Voice"
+    Forward = "Forward"
+    File = "File"
 
 class BaseMessageComponent(BaseModel):
     type: MessageComponentTypes

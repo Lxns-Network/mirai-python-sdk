@@ -174,3 +174,15 @@ class MemberJoinRequestEvent(ExternalEvent):
     groupId: T.Optional[int] = Field(..., alias="groupId")
     groupName: str = Field(..., alias="groupName")
     nickname: str = Field(..., alias="nick")
+
+class NudgeEventSubject(BaseModel):
+    id: int
+    kind: str
+
+class NudgeEvent(ExternalEvent):
+    type: EventType = EventType.NudgeEvent
+    fromId: int
+    target: int
+    subject: NudgeEventSubject
+    action: str
+    suffix: str

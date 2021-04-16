@@ -2,6 +2,8 @@ from enum import Enum
 from dataclasses import dataclass
 from pydantic import BaseModel
 
+import typing as T
+
 class Permission(Enum):
     Member = "MEMBER"
     Administrator = "ADMINISTRATOR"
@@ -59,3 +61,26 @@ class GroupSetting(BaseModel):
             if i in kwargs:
                 setattr(self, i, kwargs[i])
         return self
+
+class GroupFile(BaseModel):
+    name: str
+    path: str
+    id: str
+    length: int
+    downloadTimes: int
+    uploaderId: int
+    uploadTime: int
+    lastModifyTime: int
+    downloadUrl: str
+    sha1: str
+    md5: str
+
+class GroupFileShort(BaseModel):
+    name: str
+    id: str
+    path: str
+    isFile: bool
+
+class GroupFileList(BaseModel):
+    __root__: T.List[GroupFileShort] = []
+    

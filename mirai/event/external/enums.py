@@ -42,4 +42,6 @@ class ExternalEvents(Enum):
     NewFriendRequestEvent = NewFriendRequestEvent
     MemberJoinRequestEvent = MemberJoinRequestEvent
 
+    NudgeEvent = NudgeEvent
+
     UnexpectedException = UnexpectedException

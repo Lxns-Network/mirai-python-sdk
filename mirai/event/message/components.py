@@ -14,6 +14,7 @@ from mirai.image import (
     Base64Image, BytesImage,
 )
 from mirai.voice import LocalVoice
+from mirai.file import LocalFile
 from mirai.logger import Protocol as ProtocolLogger
 from aiohttp import ClientSession
 
@@ -27,7 +28,9 @@ __all__ = [
     "Image",
     "Unknown",
     "Quote",
-    "FlashImage"
+    "FlashImage",
+    "Forward",
+    "File"
 ]
 
 
@@ -276,6 +279,9 @@ class Voice(BaseMessageComponent):
     def __init__(self, voiceId, url=None, **_):
         super().__init__(voiceId=voiceId, url=url)
 
+    def toString(self):
+        return f"[Voice::{self.voiceId}]"
+
     def asGroupVoice(self) -> str:
         return self.voiceId
 
@@ -307,6 +313,37 @@ class Voice(BaseMessageComponent):
         else:
             return LocalVoice(path)
 
+
+from .chain import MessageChain
+from pydantic import BaseModel
+class ForwardNodeMessage(BaseModel):
+    senderId: int
+    time: datetime.datetime
+    senderName: str
+    messageChain: MessageChain
+
+class Forward(BaseMessageComponent):
+    type: MessageComponentTypes = "Forward"
+    title: str
+    brief: str
+    source: str
+    summary: str
+    nodeList: T.List[ForwardNodeMessage]
+
+class File(BaseMessageComponent):
+    type: MessageComponentTypes = "File"
+    id: str
+    internalId: T.Optional[int]
+    name: T.Optional[str]
+    size: T.Optional[int]
+
+    def toString(self):
+        return f"[File::{self.id}]"
+
+    @staticmethod
+    def fromFileSystem(path: T.Union[Path, str]) -> LocalFile:
+        return LocalFile(path)
+
 MessageComponents = {
     "At": At,
     "AtAll": AtAll,
@@ -321,5 +358,7 @@ MessageComponents = {
     "Poke": Poke,
     "Voice": Voice,
     "FlashImage": FlashImage,
+    "Forward": Forward,
+    "File": File,
     "Unknown": Unknown
 }

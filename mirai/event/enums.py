@@ -36,9 +36,11 @@ class ExternalEventTypes(Enum):
     MemberMuteEvent = "MemberMuteEvent"
     MemberUnmuteEvent = "MemberUnmuteEvent"
 
-    BotInvitedJoinGroupRequestEvent = "BotInvitedJoinGroupRequestEvent" # 新增
+    BotInvitedJoinGroupRequestEvent = "BotInvitedJoinGroupRequestEvent"
     NewFriendRequestEvent = "NewFriendRequestEvent"
     MemberJoinRequestEvent = "MemberJoinRequestEvent"
+
+    NudgeEvent = "NudgeEvent"
 
     # python-mirai 自己提供的事件
     UnexceptedException = "UnexceptedException"

@@ -19,7 +19,9 @@ from mirai.event.message.components import (
     App as LightApp,
     Image,
     FlashImage,
-    Voice
+    Voice,
+    Forward,
+    File
 )
 from mirai.event.message.chain import (
     MessageChain
@@ -73,7 +75,9 @@ from mirai.event.external import (
 
     BotInvitedJoinGroupRequestEvent,
     NewFriendRequestEvent,
-    MemberJoinRequestEvent
+    MemberJoinRequestEvent,
+
+    NudgeEvent
 )
 from mirai.event.enums import (
     BotInvitedJoinGroupRequestResponseOperate as BotInvitedJoinGroupRequestResp, # 新增
