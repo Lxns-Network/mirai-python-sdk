@@ -17,8 +17,8 @@ pip install kuriyama-lxnet
 仓库地址: https://github.com/Lxns-Network/mirai-python-sdk 
 
 ### 依赖版本
-- mirai-core-all *v2.1.1*：https://github.com/mamoe/mirai
-- mirai-api-http *v1.9.7*：https://github.com/project-mirai/mirai-api-http
+- mirai-core-all *v2.6.5*：https://github.com/mamoe/mirai
+- mirai-api-http *v1.11.0*：https://github.com/project-mirai/mirai-api-http
 ### 语音组件
 #### 第三方依赖
 ffmpeg 环境：https://ffmpeg.org/
