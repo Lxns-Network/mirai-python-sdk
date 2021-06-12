@@ -20,7 +20,7 @@ with open("README.rst", "r", encoding="utf-8") as fh:
 
 setup(
     name="kuriyama-lxnet",
-    version='1.2.1',
+    version='1.3.0',
     description='A framework for OICQ(QQ, made by Tencent) headless client "Mirai".',
     author='lxnet',
     author_email="personnpc@gmail.com",
