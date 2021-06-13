@@ -757,8 +757,8 @@ class MiraiProtocol:
     async def handleInternalVoiceForGroup(self, voice: InternalVoice):
         return await self.uploadVoice("group", voice)
 
-    async def handleInternalVoiceForGroup(self, file: InternalFile):
+    async def handleInternalFileForGroup(self, file: InternalFile):
         return await self.uploadFile("group", file)
 
-    async def handleInternalVoiceForFriend(self, file: InternalFile):
+    async def handleInternalFileForFriend(self, file: InternalFile):
         return await self.uploadFile("friend", file)
